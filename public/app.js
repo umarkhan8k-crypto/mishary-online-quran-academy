@@ -108,9 +108,11 @@ if(login){login.addEventListener('submit',async e=>{e.preventDefault();const ema
 document.getElementById('logoutLink')?.addEventListener('click',e=>{e.preventDefault();localStorage.removeItem(db.current);location.href='index.html';});
 
 if(location.pathname.endsWith('dashboard.html')){const u=currentUser();if(!u){location.href='login.html'}else if(isTutor(u)){location.href='tutor-dashboard.html'}else{(async()=>{
+try{
  const bookings=read(db.bookings,[]).filter(b=>b.userId===u.id);
  let requests=[];
- try{const r=await api(`/api/requests?studentId=${encodeURIComponent(u.id)}`);requests=r.requests||[]}catch(e){}
+ let debugMsg='';
+ try{const r=await api(`/api/requests?studentId=${encodeURIComponent(u.id)}`);requests=r.requests||[];debugMsg=`DEBUG: fetched ok, userId=${u.id}, requests found=${requests.length}, raw=${JSON.stringify(r).slice(0,300)}`}catch(e){debugMsg='DEBUG: fetch failed: '+(e&&e.message||e)}
  document.getElementById('welcome').textContent=`Assalamu Alaikum, ${u.firstName||'Learner'} \ud83d\udc4b`;
  document.getElementById('roleLabel').textContent='STUDENT DASHBOARD';
  document.getElementById('dashIntro').textContent='Track your trial requests, classes and learning journey.';
@@ -130,6 +132,10 @@ if(location.pathname.endsWith('dashboard.html')){const u=currentUser();if(!u){lo
  document.querySelectorAll('[data-request-action]').forEach(btn=>btn.addEventListener('click',async()=>{
   try{await api(`/api/requests/${encodeURIComponent(btn.dataset.requestId)}/status`,{method:'POST',body:JSON.stringify({status:btn.dataset.requestAction})});location.reload()}catch(e){}
  }));
+ const dbgEl=document.createElement('pre');dbgEl.style.cssText='white-space:pre-wrap;font-size:11px;background:#eee;padding:10px;margin-top:20px;border-radius:6px;word-break:break-all';dbgEl.textContent=debugMsg;document.getElementById('dashContent').appendChild(dbgEl);
+}catch(err){
+ document.getElementById('dashContent').innerHTML=`<pre style="white-space:pre-wrap;font-size:11px;background:#fee;padding:10px;border-radius:6px;word-break:break-all">JS ERROR: ${(err&&err.stack)||err}</pre>`;
+}
 })()}}
 
 if(location.pathname.endsWith('tutor-dashboard.html')){const u=currentUser();if(!u){location.href='login.html'}else if(!isTutor(u)){location.href='dashboard.html'}else{(async()=>{
