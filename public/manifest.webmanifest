@@ -1,0 +1,9 @@
+{
+  "name": "International Learning Platform",
+  "short_name": "ILP",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f6faf8",
+  "theme_color": "#0b8f6a",
+  "icons": []
+}
