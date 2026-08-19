@@ -107,7 +107,7 @@ if(login){login.addEventListener('submit',async e=>{e.preventDefault();const ema
 
 document.getElementById('logoutLink')?.addEventListener('click',e=>{e.preventDefault();localStorage.removeItem(db.current);location.href='index.html';});
 
-if(location.pathname.endsWith('dashboard.html')){const u=currentUser();if(!u){location.href='login.html'}else if(isTutor(u)){location.href='tutor-dashboard.html'}else{(async()=>{
+if(location.pathname.endsWith('dashboard.html')||location.pathname.endsWith('/dashboard')){const u=currentUser();if(!u){location.href='login.html'}else if(isTutor(u)){location.href='tutor-dashboard.html'}else{(async()=>{
 try{
  const bookings=read(db.bookings,[]).filter(b=>b.userId===u.id);
  let requests=[];
@@ -138,7 +138,7 @@ try{
 }
 })()}}
 
-if(location.pathname.endsWith('tutor-dashboard.html')){const u=currentUser();if(!u){location.href='login.html'}else if(!isTutor(u)){location.href='dashboard.html'}else{(async()=>{
+if(location.pathname.endsWith('tutor-dashboard.html')||location.pathname.endsWith('/tutor-dashboard')){const u=currentUser();if(!u){location.href='login.html'}else if(!isTutor(u)){location.href='dashboard.html'}else{(async()=>{
  let p={};
  try{const pr=await api(`/api/profile?userId=${encodeURIComponent(u.id)}`);p=pr.profile||{}}catch(e){}
  const bookings=read(db.bookings,[]).filter(b=>b.tutorId===u.id);
