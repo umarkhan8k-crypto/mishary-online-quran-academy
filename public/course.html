@@ -1,1 +1,126 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Course | International Learning Platform</title><link rel="stylesheet" href="style.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0b8f6a"></head><body><div id="nav"></div><main class="page"><div class="page-title"><span class="eyebrow">Course details</span><h1 id="title">Quran Course</h1><p id="desc">Learn with a qualified online tutor in live one-to-one classes.</p><a class="btn primary" href="trial.html">Book Free Trial</a></div><div class="grid cards"><div class="card"><h3>What you'll learn</h3><p>Personalized lessons, live correction, practice exercises and progress tracking.</p></div><div class="card"><h3>Class format</h3><p>One-to-one live class. Flexible schedule. Classes available for kids and adults.</p></div><div class="card"><h3>Duration</h3><p>Usually 30–60 minutes per lesson, according to the student's age and plan.</p></div><div class="card"><h3>Next step</h3><p>Book a free trial, meet a tutor and choose the plan that fits you.</p></div></div></main><footer id="footer"></footer><script src="app.js?v=20"></script><script>const data={qaida:['Noorani Qaida','Build your Arabic reading foundation step by step.'],quran:['Quran Reading','Read the Holy Quran fluently with accurate pronunciation.'],tajweed:['Tajweed','Master Quran recitation rules with guided practice.'],memorization:['Hifz & Memorization','Memorize and revise Quran with a structured tutor plan.']};const key=new URLSearchParams(location.search).get('course')||'quran';document.getElementById('title').textContent=data[key][0];document.getElementById('desc').textContent=data[key][1];</script></body></html>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Course | International Learning Platform</title><link rel="stylesheet" href="style.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0b8f6a"></head><body>
+<div id="nav"></div>
+<main class="page">
+
+<div class="page-title">
+  <span class="eyebrow">Course details</span>
+  <h1 id="title">Quran Course</h1>
+  <p id="tagline">Learn with a qualified online tutor in live one-to-one classes.</p>
+</div>
+
+<div class="course-switch" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:0 0 30px">
+  <a href="course.html?course=qaida" data-key="qaida" class="btn ghost">Noorani Qaida</a>
+  <a href="course.html?course=quran" data-key="quran" class="btn ghost">Nazira Quran</a>
+  <a href="course.html?course=memorization" data-key="memorization" class="btn ghost">Hifz &amp; Memorization</a>
+  <a href="course.html?course=tajweed" data-key="tajweed" class="btn ghost">Tajweed</a>
+</div>
+
+<div class="hero-card illustration-card" style="max-width:560px;margin:0 auto 34px">
+  <img class="hero-photo" id="courseImg" src="" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+  <div class="photo-placeholder">
+    <span class="ph-icon">📷</span>
+    <span>Add course photo here</span>
+    <small>Upload as <code id="courseImgPath"></code></small>
+  </div>
+</div>
+
+<section class="section soft" style="padding-top:0">
+  <div class="why-content" style="max-width:760px;margin:0 auto">
+    <span class="eyebrow">About this course</span>
+    <h2 id="about-h2">Noorani Qaida</h2>
+    <p class="why-lead" id="aboutText"></p>
+
+    <h3 style="margin-top:26px">What your child / you will learn</h3>
+    <ul class="why-list" id="pointsList"></ul>
+
+    <h3 style="margin-top:26px">Who this course is for</h3>
+    <p id="forWhoText"></p>
+
+    <h3 style="margin-top:26px">Class duration &amp; format</h3>
+    <p id="durationText"></p>
+  </div>
+</section>
+
+</main>
+<footer id="footer"></footer>
+<script src="app.js?v=24"></script>
+<script>
+const data={
+  qaida:{
+    title:'Noorani Qaida',
+    tagline:'The first step every child takes before reading the Quran itself.',
+    image:'images/course-qaida.jpg',
+    about:"Noorani Qaida is the foundation book used across the Muslim world to teach the Arabic alphabet, correct pronunciation (makhraj) and the basic rules of reading before a student moves on to the Quran. It breaks reading down into small, easy steps so that even a young child can build real confidence letter by letter, word by word.",
+    points:[
+      'Recognizing and correctly pronouncing all 29 Arabic letters',
+      'Joining letters together to form words (front, middle and end forms)',
+      'Harakat — zabar, zair, pesh and their sounds',
+      'Tanween, sukoon and shaddah',
+      'Madd (long vowel) letters and basic stretching rules',
+      'Reading short words and simple ayahs with correct pronunciation'
+    ],
+    forWho:'Ideal for young children starting their Quran journey (usually age 4 and up), as well as adults who are reading Arabic for the very first time.',
+    duration:'Typically 20–30 minute one-to-one classes for young children, 2–3 times a week, moving at the pace the student is comfortable with.'
+  },
+  quran:{
+    title:'Nazira Quran (Quran Reading)',
+    tagline:'Reading the Holy Quran fluently, directly from the Mushaf.',
+    image:'images/course-quran.jpg',
+    about:"Once a student has completed Noorani Qaida, Nazira Quran classes move them into reading directly from the Quran itself. The tutor listens closely and corrects pronunciation, letter sounds and word endings as the student reads, page by page, building fluency and confidence over time.",
+    points:[
+      'Reading Quranic text fluently with correct pronunciation',
+      'Recognizing Quran-specific script and stop signs (waqf marks)',
+      'Correcting common pronunciation mistakes as they happen',
+      'Building reading speed while keeping accuracy',
+      'Gradual progress through the Quran, para by para'
+    ],
+    forWho:'For students who have finished Qaida (or already read Arabic) and are ready to read the Quran itself — children and adults alike.',
+    duration:'30–45 minute one-to-one classes, with a flexible weekly schedule based on the student\'s pace.'
+  },
+  tajweed:{
+    title:'Tajweed',
+    tagline:'Learning to recite the Quran the way it was revealed.',
+    image:'images/course-tajweed.jpg',
+    about:"Tajweed is the set of rules that govern how each letter of the Quran should be pronounced and how words should be recited correctly — giving every letter its right (haqq) and characteristics (sifaat). This course helps students move from simply reading to reciting the Quran beautifully and correctly.",
+    points:[
+      'Makhraj — the precise articulation point of every letter',
+      'Rules of Noon Sakin and Tanween (Izhar, Idgham, Iqlab, Ikhfa)',
+      'Rules of Meem Sakin',
+      'Madd — types of elongation and their durations',
+      'Qalqalah and other letter characteristics',
+      'Applying Tajweed rules while reciting full ayahs and surahs'
+    ],
+    forWho:'For students who can already read the Quran and want to correct and improve how they recite it, as well as anyone preparing for correct, confident recitation.',
+    duration:'30–45 minute one-to-one classes with regular practice and correction each session.'
+  },
+  memorization:{
+    title:'Hifz &amp; Memorization',
+    tagline:'A structured, supportive path to memorizing the Quran.',
+    image:'images/course-hifz.jpg',
+    about:"Hifz classes guide a student through memorizing the Quran with a clear daily plan, regular revision (dohrai) and one-to-one support from a tutor who tracks progress closely. The pace is set around the student's age and ability, so memorization stays steady and lasting rather than rushed.",
+    points:[
+      'A daily memorization target (new lines/pages) suited to the student',
+      'Structured revision of previously memorized portions',
+      'Correct pronunciation and Tajweed applied while memorizing',
+      'Regular listening and repetition to strengthen retention',
+      'Progress tracking so both student and family can see growth'
+    ],
+    forWho:'For children and adults who want to memorize part or all of the Quran, whether starting fresh or continuing memorization already in progress.',
+    duration:'30–60 minute one-to-one classes, usually daily or several times a week for steady progress.'
+  }
+};
+const key=new URLSearchParams(location.search).get('course')||'quran';
+const c=data[key]||data.quran;
+document.getElementById('title').textContent=c.title;
+document.getElementById('about-h2').textContent=c.title;
+document.getElementById('tagline').textContent=c.tagline;
+document.getElementById('aboutText').textContent=c.about;
+document.getElementById('forWhoText').textContent=c.forWho;
+document.getElementById('durationText').textContent=c.duration;
+document.getElementById('pointsList').innerHTML=c.points.map(p=>`<li><span class="why-check">✓</span> ${p}</li>`).join('');
+const img=document.getElementById('courseImg');
+img.src=c.image;img.alt=c.title;
+document.getElementById('courseImgPath').textContent='public/'+c.image;
+document.querySelectorAll('.course-switch a').forEach(a=>{a.classList.toggle('primary',a.dataset.key===key);a.classList.toggle('ghost',a.dataset.key!==key);});
+</script>
+</body></html>
