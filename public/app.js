@@ -41,6 +41,22 @@ function setCurrent(u){write(db.current,u)}
 function msg(id,text){const el=document.getElementById(id);if(el){el.textContent=text;el.style.display='block'}}
 function qs(name){return new URLSearchParams(location.search).get(name)}
 
+/* Highlight the current page in the nav */
+document.querySelectorAll('#navLinks a:not(.btn)').forEach(a=>{
+ const here=location.pathname.split('/').pop()||'index.html';
+ if(a.getAttribute('href')===here)a.classList.add('active');
+});
+/* Lock feature buttons/links until the visitor has registered or logged in — the page itself stays reachable, only the action inside is disabled */
+document.querySelectorAll('.requires-auth').forEach(el=>{
+ if(!currentUser()){
+  el.classList.add('locked');
+  el.setAttribute('aria-disabled','true');
+  if(el.tagName==='A')el.removeAttribute('href');
+  if(!el.dataset.lockLabelled){el.dataset.lockLabelled='1';el.innerHTML='🔒 '+el.innerHTML;}
+  el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});
+ }
+});
+
 /* ---- Server API helpers: real online backend (D1 via Worker), replaces per-device localStorage for users/profiles/requests ---- */
 async function api(path,options={}){
  const res=await fetch(path,{headers:{'Content-Type':'application/json'},...options});
@@ -117,8 +133,22 @@ if(countrySelect){
  countrySelect.dataset.updateCode='true';
 }
 
+const rolePicker=document.getElementById('rolePicker');
+const roleSelect=document.getElementById('role');
+if(rolePicker&&roleSelect){
+ rolePicker.querySelectorAll('.role-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+   rolePicker.querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+   card.classList.add('selected');
+   roleSelect.value=card.dataset.role;
+  });
+ });
+}
+
 const reg=document.getElementById('registerForm');
-if(reg){reg.addEventListener('submit',async e=>{e.preventDefault();const email=document.getElementById('email').value.trim().toLowerCase();const selectedRole=document.getElementById('role').value;try{const {user}=await api('/api/register',{method:'POST',body:JSON.stringify({firstName:document.getElementById('firstName').value.trim(),lastName:document.getElementById('lastName').value.trim(),email,password:document.getElementById('password').value,role:selectedRole})});setCurrent(user);location.href=user.role==='tutor'?'tutor-dashboard.html':'dashboard.html';}catch(err){msg('registerMsg',err.message||'This email is already registered. Please login.')}});}
+if(reg){reg.addEventListener('submit',async e=>{e.preventDefault();
+ if(rolePicker&&!rolePicker.querySelector('.selected')){msg('registerMsg','Please choose Student or Tutor above first.');return}
+ const email=document.getElementById('email').value.trim().toLowerCase();const selectedRole=document.getElementById('role').value;try{const {user}=await api('/api/register',{method:'POST',body:JSON.stringify({firstName:document.getElementById('firstName').value.trim(),lastName:document.getElementById('lastName').value.trim(),email,password:document.getElementById('password').value,role:selectedRole})});setCurrent(user);location.href='profile.html';}catch(err){msg('registerMsg',err.message||'This email is already registered. Please login.')}});}
 
 const login=document.getElementById('loginForm');
 if(login){login.addEventListener('submit',async e=>{e.preventDefault();const email=document.getElementById('loginEmail').value.trim().toLowerCase(),password=document.getElementById('loginPassword').value;try{const {user}=await api('/api/login',{method:'POST',body:JSON.stringify({email,password})});setCurrent(user);location.href=isTutor(user)?'tutor-dashboard.html':'dashboard.html';}catch(err){msg('loginMsg',err.message||'Email or password is incorrect.')}});}
@@ -130,10 +160,14 @@ try{
  const bookings=read(db.bookings,[]).filter(b=>b.userId===u.id);
  let requests=[];
  let debugMsg='';
+ let p={};
+ try{const pr=await api(`/api/profile?userId=${encodeURIComponent(u.id)}`);p=pr.profile||{}}catch(e){}
  try{const r=await api(`/api/requests?studentId=${encodeURIComponent(u.id)}`);requests=r.requests||[];debugMsg=`DEBUG: fetched ok, userId=${u.id}, requests found=${requests.length}, raw=${JSON.stringify(r).slice(0,300)}`}catch(e){debugMsg='DEBUG: fetch failed: '+(e&&e.message||e)}
  document.getElementById('welcome').textContent=`Assalamu Alaikum, ${u.firstName||'Learner'} \ud83d\udc4b`;
  document.getElementById('roleLabel').textContent='STUDENT DASHBOARD';
  document.getElementById('dashIntro').textContent='Track your trial requests, classes and learning journey.';
+ const studentSummary=document.getElementById('profileSummary');
+ if(studentSummary){const fullName=`${u.firstName||''} ${u.lastName||''}`.trim()||'Student';studentSummary.innerHTML=`<div class="ph">${p.profilePicture?`<img src="${escapeHtml(p.profilePicture)}" alt="${escapeHtml(fullName)}">`:'\ud83e\uddd1\u200d\ud83c\udf93'}</div><div><div class="psu-name">${escapeHtml(fullName)}</div><div class="psu-meta">${escapeHtml(p.country||'Country not added')}${p.subjects?` \u2022 Learning: ${escapeHtml(p.subjects)}`:''}</div></div>`;}
  document.getElementById('stat1').textContent=bookings.length;
  document.getElementById('stat2').textContent='0%';
  document.getElementById('stat3').textContent=bookings.filter(b=>b.status!=='cancelled').length;
@@ -166,6 +200,8 @@ if(location.pathname.endsWith('tutor-dashboard.html')||location.pathname.endsWit
  document.getElementById('tutorEmail').textContent=u.email;
  document.getElementById('tutorSubjects').textContent=p.subjects||'Quran \u2022 Tajweed \u2022 Hifz';
  document.getElementById('tutorStatus').textContent=p.bio?'Profile ready':'Complete your profile';
+ const tutorSummary=document.getElementById('profileSummary');
+ if(tutorSummary){const fullName=`${u.firstName||''} ${u.lastName||''}`.trim()||'Tutor';tutorSummary.innerHTML=`<div class="ph">${p.profilePicture?`<img src="${escapeHtml(p.profilePicture)}" alt="${escapeHtml(fullName)}">`:'\ud83d\udc68\u200d\ud83c\udfeb'}</div><div><div class="psu-name">${escapeHtml(fullName)}</div><div class="psu-meta">${escapeHtml(p.country||'Country not added')}${p.languages?` \u2022 ${escapeHtml(p.languages)}`:''}${p.price?` \u2022 $${escapeHtml(p.price)}/class`:''}</div></div>`;}
  document.getElementById('tutorRequests').textContent=requests.filter(r=>r.status==='pending').length+bookings.length;
  document.getElementById('tutorUpcoming').textContent=bookings.filter(b=>b.status!=='cancelled').length;
  document.getElementById('tutorProfileLink').href='profile.html';
@@ -181,7 +217,8 @@ if(profileForm){
  if(!u){location.href='login.html'}else{(async()=>{
   let p={};
   try{const pr=await api(`/api/profile?userId=${encodeURIComponent(u.id)}`);p=pr.profile||{}}catch(e){}
-  ['bio','subjects','languages','experience','qualification','price','learningGoal'].forEach(k=>{const el=document.getElementById(k);if(el)el.value=p[k]??''});
+  ['bio','subjects','experience','qualification','price','learningGoal'].forEach(k=>{const el=document.getElementById(k);if(el)el.value=p[k]??''});
+  const langEl=document.getElementById(isTutor(u)?'tutorLanguages':'languages');if(langEl)langEl.value=p.languages??'';
   const phone=document.getElementById('phone');if(phone)phone.value=p.phone||'';
   if(countrySelect){countrySelect.value=p.country||'';const opt=countrySelect.options[countrySelect.selectedIndex];if(phoneCode)phoneCode.textContent=opt?.dataset.code||'+\u2014'}
   const tutorFields=document.querySelectorAll('[data-tutor-only]');tutorFields.forEach(el=>el.style.display=isTutor(u)?'':'none');
@@ -189,7 +226,7 @@ if(profileForm){
   document.getElementById('profileHeading')?.replaceChildren(document.createTextNode(isTutor(u)?'Tutor Profile':'Student Profile'));
   const preview=document.getElementById('profilePicturePreview');if(preview&&p.profilePicture){preview.style.display='block';preview.innerHTML=`<img src="${p.profilePicture}" alt="Profile picture">`}
   const pic=document.getElementById('profilePicture');if(pic)pic.addEventListener('change',()=>{const file=pic.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const size=256,canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;const ctx=canvas.getContext('2d');const scale=Math.max(size/img.width,size/img.height);const w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(size-w)/2,(size-h)/2,w,h);const data=canvas.toDataURL('image/jpeg',.78);pic.dataset.imageData=data;if(preview){preview.style.display='block';preview.innerHTML=`<img src="${data}" alt="Profile picture">`}};img.src=reader.result};reader.readAsDataURL(file)});
-  profileForm.addEventListener('submit',async e=>{e.preventDefault();const opt=countrySelect?.options[countrySelect.selectedIndex];const imageData=document.getElementById('profilePicture')?.dataset.imageData;const body={userId:u.id,phone:phone?.value?.trim()||'',phoneCode:opt?.dataset.code||'',country:countrySelect?.value||'',bio:document.getElementById('bio')?.value||'',subjects:document.getElementById('subjects')?.value||'',languages:document.getElementById('languages')?.value||'',learningGoal:document.getElementById('learningGoal')?.value||'',experience:document.getElementById('experience')?.value||'',qualification:document.getElementById('qualification')?.value||'',price:document.getElementById('price')?.value||'',profilePicture:imageData||p.profilePicture||''};try{await api('/api/profile',{method:'POST',body:JSON.stringify(body)});msg('profileMsg',isTutor(u)?'Tutor profile saved successfully.':'Student profile saved successfully. Your profile can now appear in Find Students.')}catch(err){msg('profileMsg','Could not save profile. Please try again.')}});
+  profileForm.addEventListener('submit',async e=>{e.preventDefault();const opt=countrySelect?.options[countrySelect.selectedIndex];const imageData=document.getElementById('profilePicture')?.dataset.imageData;const langVal=(isTutor(u)?document.getElementById('tutorLanguages'):document.getElementById('languages'))?.value||'';const body={userId:u.id,phone:phone?.value?.trim()||'',phoneCode:opt?.dataset.code||'',country:countrySelect?.value||'',bio:document.getElementById('bio')?.value||'',subjects:document.getElementById('subjects')?.value||'',languages:langVal,learningGoal:document.getElementById('learningGoal')?.value||'',experience:document.getElementById('experience')?.value||'',qualification:document.getElementById('qualification')?.value||'',price:document.getElementById('price')?.value||'',profilePicture:imageData||p.profilePicture||''};try{await api('/api/profile',{method:'POST',body:JSON.stringify(body)});msg('profileMsg',(isTutor(u)?'Tutor profile saved. Taking you to your dashboard…':'Student profile saved. Taking you to your dashboard…'));setTimeout(()=>{location.href=isTutor(u)?'tutor-dashboard.html':'dashboard.html'},900)}catch(err){msg('profileMsg','Could not save profile. Please try again.')}});
  })()}
 }
 
