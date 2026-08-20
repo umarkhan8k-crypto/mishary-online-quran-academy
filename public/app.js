@@ -4,13 +4,24 @@ async function subscribeToPush(userId){try{const reg=await navigator.serviceWork
 
 const nav=document.getElementById('nav');
 if(nav){
-nav.innerHTML=`<nav class="nav"><a class="brand" href="index.html"><span class="logo">☪</span><span>International Learning Platform<small>ONLINE LEARNING</small></span></a><div class="links"><a href="index.html">Home</a><a href="courses.html">Courses</a><a href="tutors.html">Find Tutors</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a class="btn primary" href="register.html">Register</a></div><span class="menu">☰</span></nav>`;
+nav.innerHTML=`<nav class="nav"><a class="brand" href="index.html"><span class="logo">☪</span><span>International Learning Platform<small>ONLINE LEARNING</small></span></a><div class="links"><a href="index.html">Home</a><a href="courses.html">Courses</a><a href="tutors.html">Find Tutors</a><a href="pricing.html">Pricing</a><a href="about.html">About</a></div><span class="menu">☰</span></nav>`;
 }
 const footer=document.getElementById('footer');
 if(footer){
 footer.className='footer';
 footer.innerHTML=`<div><h3>International Learning Platform</h3><p>Modern online learning with qualified tutors, flexible classes and a simple student experience.</p></div><div><h4>Learn</h4><a href="courses.html">Courses</a><a href="tutors.html">Tutors</a><a href="pricing.html">Pricing</a></div><div><h4>Platform</h4><a href="about.html">About us</a><a href="contact.html">Contact</a><a href="faq.html">FAQ</a></div><div><h4>Account</h4><a href="login.html">Login</a><a href="register.html">Register</a><a href="dashboard.html">Dashboard</a></div>`;
 }
+
+/* Homepage live stats: registered tutors, registered students, classes — pulled from the real backend so the numbers update automatically as people register or classes are booked. */
+const statTutorsEl=document.getElementById('statTutors');
+if(statTutorsEl){(async()=>{
+ try{
+  const r=await api('/api/stats');
+  document.getElementById('statTutors').textContent=r.tutors??0;
+  document.getElementById('statStudents').textContent=r.students??0;
+  document.getElementById('statClasses').textContent=r.classes??0;
+ }catch(e){}
+})()}
 
 const db={users:'ilp_users_v6',current:'ilp_current_v6',bookings:'ilp_bookings_v6',profiles:'ilp_profiles_v6',schedules:'ilp_schedules_v8',studentRequests:'ilp_student_requests_v9'};
 const tutors=[
