@@ -4,7 +4,7 @@ async function subscribeToPush(userId){try{const reg=await navigator.serviceWork
 
 const nav=document.getElementById('nav');
 if(nav){
-nav.innerHTML=`<nav class="nav"><a class="brand" href="index.html"><span class="logo">☪</span><span>International Learning Platform<small>ONLINE LEARNING</small></span></a><div class="links"><a href="index.html">Home</a><a href="courses.html">Courses</a><a href="tutors.html">Find Tutors</a><a href="pricing.html">Pricing</a><a href="about.html">About</a></div><span class="menu">☰</span></nav>`;
+nav.innerHTML=`<nav class="nav"><a class="brand" href="index.html"><span class="logo">☪</span><span>International Learning Platform<small>ONLINE LEARNING</small></span></a><div class="links"><a href="index.html">Home</a><a href="courses.html">Courses</a><a href="tutors.html">Find Tutors</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a class="btn ghost" href="login.html">Login</a><a class="btn primary" href="register.html">Register</a></div><span class="menu">☰</span></nav>`;
 }
 const footer=document.getElementById('footer');
 if(footer){
