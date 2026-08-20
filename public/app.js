@@ -262,3 +262,4 @@ if(tutorSearch){tutorSearch.addEventListener('input',()=>{const q=tutorSearch.va
 function openModal(){document.querySelector('.modal')?.classList.add('show')}
 function closeModal(){document.querySelector('.modal')?.classList.remove('show')}
 
+
