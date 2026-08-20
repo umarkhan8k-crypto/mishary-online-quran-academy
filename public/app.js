@@ -1,3 +1,7 @@
+const VAPID_PUBLIC_KEY='BDUS6uuXkaMBikNCYJH5jAQFl7r1_kAzgypGflVdF1L6qNiMhkTymZszPqY8ZDo3KPaUhzL6JOy6GgEcik-M_sM';
+function urlBase64ToUint8Array(base64String){const padding='='.repeat((4-base64String.length%4)%4);const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');const rawData=atob(base64);const outputArray=new Uint8Array(rawData.length);for(let i=0;i<rawData.length;i++){outputArray[i]=rawData.charCodeAt(i)}return outputArray}
+async function subscribeToPush(userId){try{const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();if(!sub){sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)})}const json=sub.toJSON();await api('/api/push/subscribe',{method:'POST',body:JSON.stringify({userId,endpoint:json.endpoint,keys:json.keys})})}catch(e){}}
+
 const nav=document.getElementById('nav');
 if(nav){
 nav.innerHTML=`<nav class="nav"><a class="brand" href="index.html"><span class="logo">☪</span><span>International Learning Platform<small>ONLINE LEARNING</small></span></a><div class="links"><a href="index.html">Home</a><a href="courses.html">Courses</a><a href="tutors.html">Find Tutors</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a class="btn primary" href="register.html">Register</a></div><span class="menu">☰</span></nav>`;
@@ -50,6 +54,7 @@ async function enableNotifications(){
   if(permission==='granted'){
    if(status)status.textContent='Notifications are enabled on this device.';
    localStorage.setItem('ilp_notifications_enabled','yes');
+   const cu=currentUser();if(cu)subscribeToPush(cu.id);
    return true;
   }
   if(status)status.textContent='Notifications are blocked. Allow them in browser settings to receive alerts.';
@@ -153,6 +158,8 @@ if(location.pathname.endsWith('tutor-dashboard.html')||location.pathname.endsWit
  document.getElementById('tutorProfileLink').href='profile.html';
  document.getElementById('studentRequests').innerHTML=requests.length?requests.map(r=>{return `<div class="request-row"><div class="request-avatar">\ud83d\udc64</div><div class="request-main"><strong>${r.studentName||'Student'}</strong><p>${r.studentCountry||'Country not added'}${r.studentSubjects?' \u2022 Wants: '+r.studentSubjects:''}</p><small>${r.status==='pending'?'Waiting for student response':'Request '+r.status} \u2022 ${new Date(r.createdAt).toLocaleString()}</small></div><span class="pill">${r.status||'pending'}</span></div>`}).join(''):'<p style="color:var(--muted)">No student requests yet. Open Find Students to discover learners.</p>';
  document.getElementById('tutorBookings').innerHTML=bookings.length?`<h3 style="margin-top:22px">Class bookings</h3>`+bookings.map(b=>`<div class="booking-row"><div><strong>${b.course||'Quran lesson'}</strong><p>${b.student||'Student'} \u2022 ${b.time?new Date(b.time).toLocaleString():'Time to be arranged'}</p></div><span class="pill">${b.status||'requested'}</span></div>`).join(''):'';
+ if(document.getElementById('enableNotifications'))document.getElementById('enableNotifications').addEventListener('click',enableNotifications);
+ if(localStorage.getItem('ilp_notifications_enabled')==='yes')subscribeToPush(u.id);
 })()}}
 
 const profileForm=document.getElementById('profileForm');
