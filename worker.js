@@ -231,6 +231,19 @@ async function handleApi(request, env, url, ctx) {
     return json({ request: updated });
   }
 
+  if (path === '/api/stats' && method === 'GET') {
+    const tutorRow = await env.DB.prepare("SELECT COUNT(*) as c FROM users WHERE role = 'tutor'").first();
+    const studentRow = await env.DB.prepare("SELECT COUNT(*) as c FROM users WHERE role = 'student'").first();
+    // No dedicated "classes" table exists yet, so an accepted tutor↔student request is used
+    // as the closest available proxy for a class relationship formed on the platform.
+    const classRow = await env.DB.prepare("SELECT COUNT(*) as c FROM requests WHERE status = 'accepted'").first();
+    return json({
+      tutors: tutorRow?.c || 0,
+      students: studentRow?.c || 0,
+      classes: classRow?.c || 0,
+    });
+  }
+
   return json({ error: 'Not found' }, 404);
 }
 
