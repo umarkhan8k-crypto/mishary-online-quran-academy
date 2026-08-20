@@ -261,5 +261,3 @@ const tutorSearch=document.getElementById('tutorSearch');
 if(tutorSearch){tutorSearch.addEventListener('input',()=>{const q=tutorSearch.value.toLowerCase();document.querySelectorAll('[data-tutor]').forEach(el=>el.style.display=el.dataset.tutor.toLowerCase().includes(q)?'':'none');});}
 function openModal(){document.querySelector('.modal')?.classList.add('show')}
 function closeModal(){document.querySelector('.modal')?.classList.remove('show')}
-
-
