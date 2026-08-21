@@ -1,1 +1,44 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Free Trial | International Learning Platform</title><link rel="stylesheet" href="style.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0b8f6a"></head><body><div id="nav"></div><main class="page"><div class="page-title"><span class="eyebrow">Free trial</span><h1>Book your free Quran class</h1><p>Sign in first, then submit a trial request. Your request will appear in your dashboard.</p></div><div class="form-wrap"><form data-demo><div class="form-grid"><div class="field"><label>Student name</label><input required></div><div class="field"><label>Age</label><input type="number" min="3" max="100" required></div></div><div class="field"><label>Course</label><select><option>Quran Reading</option><option>Noorani Qaida</option><option>Tajweed</option><option>Hifz</option></select></div><div class="field"><label>Preferred time</label><input type="datetime-local" required></div><div class="field"><label>Message</label><textarea placeholder="Any special requirements?"></textarea></div><button class="btn primary full">Request Free Trial</button></form></div></main><footer id="footer"></footer><script src="app.js?v=20"></script></body></html>
+<!-- trial.html کے اندر فارم کا حصہ -->
+<form id="trialForm">
+    <h2>Book your free Quran class</h2>
+    <p>Sign in first, then submit a trial request. All fields are required.</p>
+    
+    <div class="form-group">
+        <label for="studentName">Student Name</label>
+        <input type="text" id="studentName" required placeholder="Enter full name">
+    </div>
+
+    <div class="form-group">
+        <label for="studentAge">Age</label>
+        <input type="number" id="studentAge" required placeholder="Enter age">
+    </div>
+
+    <div class="form-group">
+        <label for="tutorSelect">Select Tutor</label>
+        <select id="tutorSelect" required>
+            <option value="">-- Choose a Tutor --</option>
+            <!-- یہاں ٹیوٹرز کے نام ڈائنامیک لوڈ ہوں گے -->
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="courseSelect">Course</label>
+        <select id="courseSelect" required>
+            <option value="Quran Reading">Quran Reading</option>
+            <option value="Hifz">Hifz</option>
+            <option value="Tajweed">Tajweed</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="preferredTime">Preferred Time</label>
+        <input type="datetime-local" id="preferredTime" required>
+    </div>
+
+    <div class="form-group">
+        <label for="message">Message to Tutor</label>
+        <textarea id="message" required placeholder="Write a message for the tutor..."></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit">Request Free Trial & Send Message</button>
+</form>
