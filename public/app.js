@@ -40,6 +40,7 @@ function qs(name){return new URLSearchParams(location.search).get(name)}
 document.querySelectorAll('#navLinks a:not(.btn)').forEach(a=>{
 let here=(location.pathname.split('/').pop()||'index.html').replace('.html','');
 if(here==='')here='index';
+if(here==='course')here='courses';
 const linkPage=(a.getAttribute('href')||'').replace('.html','');
 a.classList.toggle('active',linkPage===here);
 });
