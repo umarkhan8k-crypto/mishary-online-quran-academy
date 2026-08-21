@@ -1,1 +1,58 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Find Tutors | International Learning Platform</title><link rel="stylesheet" href="style.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0b8f6a"></head><body><div id="nav"></div><main class="page"><div class="page-title"><span class="eyebrow">Our teachers</span><h1>Find your perfect Quran tutor</h1><p>Browse tutor profiles and choose based on subjects, languages and experience.</p></div><div class="form-wrap" style="margin-bottom:24px"><div class="field"><label>Search tutors</label><input id="tutorSearch" placeholder="Search by name, subject or language"></div></div><div class="tutor-grid"><div class="tutor" data-tutor="Ustadh Ahmad Quran Tajweed Hifz English Urdu"><div class="avatar">👨‍🏫</div><div class="tutor-body"><h3>Ustadh Ahmad</h3><div class="stars">★★★★★</div><p>Quran • Tajweed • Hifz</p><span class="pill">English</span><span class="pill">Urdu</span><div class="price">$8 / class</div><a class="btn primary full requires-auth" href="tutor.html?id=ahmad">View Profile</a></div></div><div class="tutor" data-tutor="Ustadha Maryam Kids Quran Qaida Tajweed English Urdu"><div class="avatar">👩‍🏫</div><div class="tutor-body"><h3>Ustadha Maryam</h3><div class="stars">★★★★★</div><p>Kids Quran • Qaida • Tajweed</p><span class="pill">English</span><span class="pill">Urdu</span><div class="price">$7 / class</div><a class="btn primary full requires-auth" href="tutor.html?id=maryam">View Profile</a></div></div><div class="tutor" data-tutor="Ustadh Bilal Quran Reading Arabic English Arabic"><div class="avatar">👨‍🏫</div><div class="tutor-body"><h3>Ustadh Bilal</h3><div class="stars">★★★★☆</div><p>Quran Reading • Arabic</p><span class="pill">English</span><span class="pill">Arabic</span><div class="price">$9 / class</div><a class="btn primary full requires-auth" href="tutor.html?id=bilal">View Profile</a></div></div></div></main><footer id="footer"></footer><script src="app.js?v=20"></script></body></html>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Find Tutors | International Learning Platform</title><link rel="stylesheet" href="style.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0b8f6a"></head><body><div id="nav"></div><main class="page">
+<div class="page-title"><span class="eyebrow">Our teachers</span><h1>Find your perfect Quran tutor</h1><p>Browse tutor profiles and choose based on subjects, languages and experience.</p></div>
+<div class="form-wrap" style="margin-bottom:24px"><div class="field"><label>Search tutors</label><input id="tutorSearch" placeholder="Search by name, subject or language"></div></div>
+<div class="tutor-grid" id="tutorGrid"></div>
+<p id="tutorEmpty" style="display:none;color:var(--muted);text-align:center;margin-top:20px">No tutors with a complete profile yet. Please check back soon.</p>
+</main><footer id="footer"></footer><script src="app.js?v=24"></script>
+<script>
+(async()=>{
+const grid=document.getElementById('tutorGrid');
+const empty=document.getElementById('tutorEmpty');
+let tutors=[];
+try{
+const r=await api('/api/users?role=tutor');
+tutors=r.users||[];
+}catch(e){}
+
+const profileCache={};
+const getProfile=async(id)=>{
+if(profileCache[id])return profileCache[id];
+try{const r=await api(`/api/profile?userId=${encodeURIComponent(id)}`);profileCache[id]=r.profile||{}}catch(e){profileCache[id]={}}
+return profileCache[id];
+};
+
+/* A tutor profile only shows once every box on their profile form has been filled in. */
+const REQUIRED_TUTOR_FIELDS=['bio','subjects','languages','price','qualification','experience','phone','country','profilePicture'];
+function isTutorProfileComplete(p){
+if(!p)return false;
+return REQUIRED_TUTOR_FIELDS.every(k=>p[k]!==undefined&&p[k]!==null&&String(p[k]).trim()!=='');
+}
+
+const withProfiles=[];
+for(const t of tutors){
+const p=await getProfile(t.id);
+if(isTutorProfileComplete(p)) withProfiles.push({t,p});
+}
+
+function render(){
+const q=(document.getElementById('tutorSearch')?.value||'').trim().toLowerCase();
+const rows=withProfiles.filter(({t,p})=>{
+if(!q)return true;
+const text=[t.firstName,t.lastName,p.subjects,p.languages,p.bio,p.country].filter(Boolean).join(' ').toLowerCase();
+return text.includes(q);
+});
+empty.style.display=rows.length?'none':'block';
+grid.innerHTML=rows.map(({t,p})=>{
+const fullName=(`${t.firstName||''} ${t.lastName||''}`).trim()||'Tutor';
+const searchAttr=[fullName,p.subjects,p.languages].filter(Boolean).join(' ').replace(/"/g,'');
+const avatar=p.profilePicture?`<img src="${p.profilePicture}" alt="${fullName}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`:'👨‍🏫';
+const langs=(p.languages||'').split(',').map(l=>l.trim()).filter(Boolean);
+return `<div class="tutor" data-tutor="${searchAttr}"><div class="avatar">${avatar}</div><div class="tutor-body"><h3>${fullName}</h3><p>${p.subjects}</p>${langs.map(l=>`<span class="pill">${l}</span>`).join('')}<div class="price">$${p.price} / class</div><a class="btn primary full requires-auth" href="tutor.html?id=${encodeURIComponent(t.id)}">View Profile</a></div></div>`;
+}).join('');
+}
+
+render();
+document.getElementById('tutorSearch')?.addEventListener('input',render);
+})();
+</script>
+</body></html>
