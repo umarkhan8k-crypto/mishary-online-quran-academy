@@ -242,6 +242,13 @@ render();
 }
 }
 function escapeHtml(v){return String(v??'').replace(/[&<>\'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+/* A profile only counts as "complete" once every box on the profile form has been filled in — used to hide incomplete tutor/student cards from search. */
+const REQUIRED_TUTOR_PROFILE_FIELDS=['bio','subjects','languages','price','qualification','experience','phone','country','profilePicture'];
+const REQUIRED_STUDENT_PROFILE_FIELDS=['bio','subjects','languages','learningGoal','phone','country','profilePicture'];
+function isProfileComplete(p,fields){
+if(!p)return false;
+return fields.every(k=>p[k]!==undefined&&p[k]!==null&&String(p[k]).trim()!=='');
+}
 function countryMatch(profile,q){return [profile.country,profile.phoneCode].filter(Boolean).join(' ').toLowerCase().includes(q)}
 const studentResults=document.getElementById('studentResults');
 if(studentResults){
@@ -265,10 +272,11 @@ else if(`${st.firstName||''} ${st.lastName||''}`.toLowerCase().includes(q)) scor
 else if(text.includes(q)) score=1;
 else score=0;
 }
-if(score>0) rows.push({st,p,score});
+if(score>0 && isProfileComplete(p,REQUIRED_STUDENT_PROFILE_FIELDS)) rows.push({st,p,score});
 }
 rows.sort((a,b)=>b.score-a.score);
 document.getElementById('studentEmpty').style.display=rows.length?'none':'block';
+document.getElementById('studentEmpty').textContent='No students with a complete profile yet.';
 studentResults.innerHTML=rows.map(({st,p})=>{
 const pending=allRequests.some(r=>r.studentId===st.id&&r.status==='pending');
 const sent=allRequests.some(r=>r.studentId===st.id&&r.status==='accepted');
