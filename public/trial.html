@@ -1,44 +1,88 @@
-<!-- trial.html کے اندر فارم کا حصہ -->
-<form id="trialForm">
-    <h2>Book your free Quran class</h2>
-    <p>Sign in first, then submit a trial request. All fields are required.</p>
-    
-    <div class="form-group">
-        <label for="studentName">Student Name</label>
-        <input type="text" id="studentName" required placeholder="Enter full name">
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Trial - International Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">International Learning Platform</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="courses.html">Courses</a></li>
+                <li><a href="tutors.html">Find Tutors</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="login.html" class="btn-login">Login</a></li>
+                <li><a href="register.html" class="btn-register">Register</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <div class="form-group">
-        <label for="studentAge">Age</label>
-        <input type="number" id="studentAge" required placeholder="Enter age">
-    </div>
+    <!-- Main Section -->
+    <main class="container">
+        <section class="trial-section">
+            <div class="trial-header">
+                <span class="badge">FREE TRIAL</span>
+                <h1>Book your free Quran class</h1>
+                <p>Fill out all required fields to book your session and notify your tutor.</p>
+            </div>
 
-    <div class="form-group">
-        <label for="tutorSelect">Select Tutor</label>
-        <select id="tutorSelect" required>
-            <option value="">-- Choose a Tutor --</option>
-            <!-- یہاں ٹیوٹرز کے نام ڈائنامیک لوڈ ہوں گے -->
-        </select>
-    </div>
+            <form id="trialForm" class="auth-form">
+                <div class="form-group">
+                    <label for="studentName">Student Name *</label>
+                    <input type="text" id="studentName" required placeholder="Enter your full name">
+                </div>
 
-    <div class="form-group">
-        <label for="courseSelect">Course</label>
-        <select id="courseSelect" required>
-            <option value="Quran Reading">Quran Reading</option>
-            <option value="Hifz">Hifz</option>
-            <option value="Tajweed">Tajweed</option>
-        </select>
-    </div>
+                <div class="form-group">
+                    <label for="studentAge">Age *</label>
+                    <input type="number" id="studentAge" required placeholder="Enter your age">
+                </div>
 
-    <div class="form-group">
-        <label for="preferredTime">Preferred Time</label>
-        <input type="datetime-local" id="preferredTime" required>
-    </div>
+                <div class="form-group">
+                    <label for="tutorSelect">Select Tutor *</label>
+                    <select id="tutorSelect" required>
+                        <option value="">-- Choose a Tutor --</option>
+                        <option value="tutor1">Mishary (Quran Expert)</option>
+                        <option value="tutor2">Ahmed (Tajweed Specialist)</option>
+                    </select>
+                </div>
 
-    <div class="form-group">
-        <label for="message">Message to Tutor</label>
-        <textarea id="message" required placeholder="Write a message for the tutor..."></textarea>
-    </div>
+                <div class="form-group">
+                    <label for="courseSelect">Course *</label>
+                    <select id="courseSelect" required>
+                        <option value="Quran Reading">Quran Reading</option>
+                        <option value="Hifz">Hifz</option>
+                        <option value="Tajweed">Tajweed</option>
+                    </select>
+                </div>
 
-    <button type="submit" class="btn-submit">Request Free Trial & Send Message</button>
-</form>
+                <div class="form-group">
+                    <label for="preferredTime">Preferred Time *</label>
+                    <input type="datetime-local" id="preferredTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message to Tutor *</label>
+                    <textarea id="message" required rows="4" placeholder="Write your requirements or message for the tutor..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Request Free Trial & Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 International Learning Platform. All rights reserved.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
