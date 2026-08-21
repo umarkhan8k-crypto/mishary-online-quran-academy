@@ -16,8 +16,8 @@
 </div>
 
 <div class="hero-card illustration-card" style="max-width:560px;margin:0 auto 34px">
-  <img class="hero-photo" id="courseImg" src="" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-  <div class="photo-placeholder">
+  <img class="hero-photo" id="courseImg" alt="" style="display:none">
+  <div class="photo-placeholder" id="courseImgPlaceholder">
     <span class="ph-icon">📷</span>
     <span>Add course photo here</span>
     <small>Upload as <code id="courseImgPath"></code></small>
@@ -118,9 +118,17 @@ document.getElementById('aboutText').textContent=c.about;
 document.getElementById('forWhoText').textContent=c.forWho;
 document.getElementById('durationText').textContent=c.duration;
 document.getElementById('pointsList').innerHTML=c.points.map(p=>`<li><span class="why-check">✓</span> ${p}</li>`).join('');
+
+/* Load the course image. Only show the "add photo" placeholder if the image
+   genuinely fails to load — never before the browser has actually tried it. */
 const img=document.getElementById('courseImg');
-img.src=c.image;img.alt=c.title;
+const placeholder=document.getElementById('courseImgPlaceholder');
 document.getElementById('courseImgPath').textContent='public/'+c.image;
+img.alt=c.title;
+img.onload=function(){img.style.display='block';placeholder.style.display='none';};
+img.onerror=function(){img.style.display='none';placeholder.style.display='flex';};
+img.src=c.image;
+
 document.querySelectorAll('.course-switch a').forEach(a=>{a.classList.toggle('primary',a.dataset.key===key);a.classList.toggle('ghost',a.dataset.key!==key);});
 </script>
 </body></html>
