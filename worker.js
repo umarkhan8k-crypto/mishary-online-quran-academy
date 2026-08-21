@@ -17,3 +17,4 @@ if (url.pathname === '/api/book-trial' && request.method === 'POST') {
         });
     }
 }
+
