@@ -45,9 +45,9 @@ empty.style.display=rows.length?'none':'block';
 grid.innerHTML=rows.map(({t,p})=>{
 const fullName=(`${t.firstName||''} ${t.lastName||''}`).trim()||'Tutor';
 const searchAttr=[fullName,p.subjects,p.languages,p.country,p.qualification].filter(Boolean).join(' ').replace(/"/g,'');
-const avatar=p.profilePicture?`<img src="${p.profilePicture}" alt="${fullName}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`:'👨‍🏫';
+const avatar=p.profilePicture?`<img src="${p.profilePicture}" alt="${fullName}" style="width:100%;height:100%;object-fit:cover;display:block">`:'👨‍🏫';
 const langs=(p.languages||'').split(',').map(l=>l.trim()).filter(Boolean);
-return `<div class="tutor" data-tutor="${searchAttr}"><div class="avatar">${avatar}</div><div class="tutor-body"><h3>${fullName}</h3><div class="tutor-fact"><strong>Teaches:</strong> ${p.subjects}</div><div class="tutor-fact"><strong>Country:</strong> ${p.country}</div><div class="tutor-fact"><strong>Qualification:</strong> ${p.qualification}</div>${langs.map(l=>`<span class="pill">${l}</span>`).join('')}<div class="price">$${p.price} / class</div><a class="btn primary full requires-auth" href="tutor.html?id=${encodeURIComponent(t.id)}">View Profile</a></div></div>`;
+return `<div class="tutor" data-tutor="${searchAttr}"><div class="avatar" style="height:170px;overflow:hidden;position:relative;margin:0"><div style="width:100%;height:100%">${avatar}</div></div><div class="tutor-body" style="margin-top:0;position:relative;background:#fff;padding-top:16px"><h3>${fullName}</h3><div class="tutor-fact"><strong>Teaches:</strong> ${p.subjects}</div><div class="tutor-fact"><strong>Country:</strong> ${p.country}</div><div class="tutor-fact"><strong>Qualification:</strong> ${p.qualification}</div>${langs.map(l=>`<span class="pill">${l}</span>`).join('')}<div class="price">$${p.price} / class</div><a class="btn primary full requires-auth" href="tutor.html?id=${encodeURIComponent(t.id)}">View Profile</a></div></div>`;
 }).join('');
 }
 
